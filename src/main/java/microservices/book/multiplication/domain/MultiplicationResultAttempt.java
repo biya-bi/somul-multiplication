@@ -21,9 +21,10 @@ public final class MultiplicationResultAttempt {
 	private final User user;
 	private final Multiplication multiplication;
 	private final int resultAttempt;
+	private final boolean correct;
 
 	// Empty constructor for JSON (de)serialization
 	MultiplicationResultAttempt() {
-		this(null,null,-1);
+		this(null, null, -1, false);
 	}
 }
