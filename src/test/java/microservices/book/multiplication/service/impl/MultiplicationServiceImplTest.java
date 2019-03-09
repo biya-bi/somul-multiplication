@@ -5,16 +5,21 @@ package microservices.book.multiplication.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
+import microservices.book.multiplication.repository.MultiplicationRepository;
+import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
+import microservices.book.multiplication.repository.UserRepository;
 import microservices.book.multiplication.service.RandomGeneratorService;
 
 /**
@@ -23,16 +28,25 @@ import microservices.book.multiplication.service.RandomGeneratorService;
  */
 public class MultiplicationServiceImplTest {
 
+	private MultiplicationServiceImpl multiplicationService;
+
 	@Mock
 	private RandomGeneratorService randomGeneratorService;
 
-	@Autowired
-	private MultiplicationServiceImpl multiplicationService;
+	@Mock
+	private MultiplicationResultAttemptRepository attemptRepository;
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
+	private MultiplicationRepository multiplicationRepository;
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		multiplicationService = new MultiplicationServiceImpl(randomGeneratorService);
+		multiplicationService = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository, userRepository,
+				multiplicationRepository);
 	}
 
 	@Test
@@ -53,10 +67,17 @@ public class MultiplicationServiceImplTest {
 		Multiplication multiplication = new Multiplication(50, 60);
 		User user = new User("john_doe");
 		MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3000, false);
+		MultiplicationResultAttempt verifiedAttempt = new MultiplicationResultAttempt(user, multiplication, 3000, true);
+		given(userRepository.findByAlias("john_doe")).willReturn(Optional.empty());
+		given(multiplicationRepository.findByFactorAAndFactorB(multiplication.getFactorA(),
+				multiplication.getFactorB())).willReturn(Optional.<Multiplication>of(multiplication));
 		// when
 		boolean attemptResult = multiplicationService.checkAttempt(attempt);
-		// assert
+		// then
 		assertThat(attemptResult).isTrue();
+		verify(attemptRepository).save(verifiedAttempt);
+		verify(multiplicationRepository).findByFactorAAndFactorB(multiplication.getFactorA(),
+				multiplication.getFactorB());
 	}
 
 	@Test
@@ -65,9 +86,15 @@ public class MultiplicationServiceImplTest {
 		Multiplication multiplication = new Multiplication(50, 60);
 		User user = new User("john_doe");
 		MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3010, false);
+		given(userRepository.findByAlias("john_doe")).willReturn(Optional.empty());
+		given(multiplicationRepository.findByFactorAAndFactorB(multiplication.getFactorA(),
+				multiplication.getFactorB())).willReturn(Optional.<Multiplication>of(multiplication));
 		// when
 		boolean attemptResult = multiplicationService.checkAttempt(attempt);
-		// assert
+		// then
 		assertThat(attemptResult).isFalse();
+		verify(attemptRepository).save(attempt);
+		verify(multiplicationRepository).findByFactorAAndFactorB(multiplication.getFactorA(),
+				multiplication.getFactorB());
 	}
 }
