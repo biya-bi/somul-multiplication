@@ -3,6 +3,7 @@
  */
 package microservices.book.multiplication.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,14 +78,26 @@ public class MultiplicationServiceImpl implements MultiplicationService {
 
 		// Creates a copy, now setting the 'correct' field accordingly
 		MultiplicationResultAttempt checkedAttempt = new MultiplicationResultAttempt(
-				userOptional.orElse(resultAttempt.getUser()), multiplicationOptional.orElse(resultAttempt.getMultiplication()),
-				resultAttempt.getResultAttempt(), correct);
+				userOptional.orElse(resultAttempt.getUser()),
+				multiplicationOptional.orElse(resultAttempt.getMultiplication()), resultAttempt.getResultAttempt(),
+				correct);
 
 		// Stores the attempt
 		attemptRepository.save(checkedAttempt);
 
 		// Returns the result
 		return correct;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see microservices.book.multiplication.service.MultiplicationService#
+	 * getStatsForUser(java.lang.String)
+	 */
+	@Override
+	public List<MultiplicationResultAttempt> getStatsForUser(String userAlias) {
+		return attemptRepository.findTop5ByUserAliasOrderByIdDesc(userAlias);
 	}
 
 }
