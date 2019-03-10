@@ -25,7 +25,7 @@ import microservices.book.multiplication.service.RandomGeneratorService;
  *
  */
 @Service
-public class MultiplicationServiceImpl implements MultiplicationService {
+class MultiplicationServiceImpl implements MultiplicationService {
 	private RandomGeneratorService randomGeneratorService;
 	private MultiplicationResultAttemptRepository attemptRepository;
 	private UserRepository userRepository;

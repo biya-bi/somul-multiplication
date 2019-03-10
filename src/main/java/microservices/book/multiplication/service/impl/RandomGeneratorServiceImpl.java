@@ -14,7 +14,7 @@ import microservices.book.multiplication.service.RandomGeneratorService;
  *
  */
 @Service
-public class RandomGeneratorServiceImpl implements RandomGeneratorService {
+class RandomGeneratorServiceImpl implements RandomGeneratorService {
 	final static int MINIMUM_FACTOR = 11;
 	final static int MAXIMUM_FACTOR = 99;
 
