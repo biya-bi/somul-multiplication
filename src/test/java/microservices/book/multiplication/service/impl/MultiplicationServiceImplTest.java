@@ -19,6 +19,8 @@ import org.mockito.MockitoAnnotations;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
+import microservices.book.multiplication.event.EventDispatcher;
+import microservices.book.multiplication.event.MultiplicationSolvedEvent;
 import microservices.book.multiplication.repository.MultiplicationRepository;
 import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
@@ -44,11 +46,14 @@ public class MultiplicationServiceImplTest {
 	@Mock
 	private MultiplicationRepository multiplicationRepository;
 
+	@Mock
+	private EventDispatcher eventDispatcher;
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		multiplicationService = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository, userRepository,
-				multiplicationRepository);
+				multiplicationRepository, eventDispatcher);
 	}
 
 	@Test
@@ -80,6 +85,8 @@ public class MultiplicationServiceImplTest {
 		verify(attemptRepository).save(verifiedAttempt);
 		verify(multiplicationRepository).findByFactorAAndFactorB(multiplication.getFactorA(),
 				multiplication.getFactorB());
+		verify(eventDispatcher).send(
+				new MultiplicationSolvedEvent(verifiedAttempt.getId(), user.getId(), verifiedAttempt.isCorrect()));
 	}
 
 	@Test
@@ -98,6 +105,8 @@ public class MultiplicationServiceImplTest {
 		verify(attemptRepository).save(attempt);
 		verify(multiplicationRepository).findByFactorAAndFactorB(multiplication.getFactorA(),
 				multiplication.getFactorB());
+		verify(eventDispatcher).send(
+				new MultiplicationSolvedEvent(attempt.getId(), user.getId(), attempt.isCorrect()));
 	}
 
 	@Test
