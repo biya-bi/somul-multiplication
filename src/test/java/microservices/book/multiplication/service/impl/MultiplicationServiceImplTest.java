@@ -105,8 +105,7 @@ public class MultiplicationServiceImplTest {
 		verify(attemptRepository).save(attempt);
 		verify(multiplicationRepository).findByFactorAAndFactorB(multiplication.getFactorA(),
 				multiplication.getFactorB());
-		verify(eventDispatcher).send(
-				new MultiplicationSolvedEvent(attempt.getId(), user.getId(), attempt.isCorrect()));
+		verify(eventDispatcher).send(new MultiplicationSolvedEvent(attempt.getId(), user.getId(), attempt.isCorrect()));
 	}
 
 	@Test
@@ -125,4 +124,20 @@ public class MultiplicationServiceImplTest {
 		assertThat(latestAttemptsResult).isEqualTo(latestAttempts);
 	}
 
+	@Test
+	public void getMultiplicationResultAttempt_MultiplicationResultAttemptWithProvidedIDExists_ReturnMultiplicationResultAttempt() {
+		// Given
+		long attemptId = 1;
+		Multiplication multiplication = new Multiplication(50, 60);
+		User user = new User("john_doe");
+		MultiplicationResultAttempt expected = new MultiplicationResultAttempt(user, multiplication, 3000, true);
+
+		given(attemptRepository.findOne(attemptId)).willReturn(expected);
+
+		// When
+		MultiplicationResultAttempt actual = multiplicationService.getMultiplicationResultAttempt(attemptId);
+
+		// Then
+		assertThat(actual).isEqualTo(expected);
+	}
 }

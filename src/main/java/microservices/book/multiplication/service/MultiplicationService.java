@@ -32,4 +32,15 @@ public interface MultiplicationService {
 	 *         the supplied alias
 	 */
 	List<MultiplicationResultAttempt> getStatsForUser(String userAlias);
+
+	/**
+	 * Returns the {@link MultiplicationResultAttempt} corresponding to the given
+	 * ID.
+	 * 
+	 * @param attemptId the ID of the {@link MultiplicationResultAttempt} to
+	 *                  retrieve.
+	 * @return the {@link MultiplicationResultAttempt} corresponding to the given
+	 *         ID.
+	 */
+	MultiplicationResultAttempt getMultiplicationResultAttempt(Long attemptId);
 }

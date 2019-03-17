@@ -108,4 +108,15 @@ class MultiplicationServiceImpl implements MultiplicationService {
 		return attemptRepository.findTop5ByUserAliasOrderByIdDesc(userAlias);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see microservices.book.multiplication.service.MultiplicationService#
+	 * getMultiplicationResultAttempt(java.lang.Long)
+	 */
+	@Override
+	public MultiplicationResultAttempt getMultiplicationResultAttempt(Long attemptId) {
+		return attemptRepository.findOne(attemptId);
+	}
+
 }

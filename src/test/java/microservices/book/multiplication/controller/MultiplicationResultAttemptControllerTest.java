@@ -98,4 +98,24 @@ public class MultiplicationResultAttemptControllerTest {
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 		assertThat(response.getContentAsString()).isEqualTo(jsonResultAttemptList.write(recentAttempts).getJson());
 	}
+
+	@Test
+	public void getResultById_ResultIdProvided_ReturnMultiplicationResultAttempt() throws Exception {
+		boolean correct = true;
+		// Given
+		long attemptId = 1;
+		User user = new User("john_doe");
+		Multiplication multiplication = new Multiplication(50, 70);
+		MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3500, correct);
+		
+		given(multiplicationService.getMultiplicationResultAttempt(attemptId)).willReturn(attempt);
+		
+		// When
+		MockHttpServletResponse response = mvc.perform(get("/results/" + attemptId).accept(MediaType.APPLICATION_JSON))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.getContentAsString()).isEqualTo(jsonResult.write(attempt).getJson());
+	}
 }
