@@ -17,11 +17,11 @@ import microservices.book.multiplication.service.MultiplicationService;
  */
 @RestController
 @RequestMapping("/multiplications")
-public class MultiplicationController {
+class MultiplicationController {
 	private final MultiplicationService multiplicationService;
 
 	@Autowired
-	public MultiplicationController(final MultiplicationService multiplicationService) {
+	MultiplicationController(final MultiplicationService multiplicationService) {
 		this.multiplicationService = multiplicationService;
 	}
 

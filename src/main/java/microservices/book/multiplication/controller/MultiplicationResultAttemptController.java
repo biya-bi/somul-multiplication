@@ -23,7 +23,7 @@ import microservices.book.multiplication.service.MultiplicationService;
  */
 @RestController
 @RequestMapping("/results")
-public class MultiplicationResultAttemptController {
+class MultiplicationResultAttemptController {
 
 	private final MultiplicationService multiplicationService;
 
