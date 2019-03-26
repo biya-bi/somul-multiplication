@@ -10,10 +10,11 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>microservices.book</groupId>
-	<artifactId>social-multiplication</artifactId>
+	<artifactId>multiplication</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>social-multiplication</name>
-	<description>Demo project for Spring Boot</description>
+	<packaging>war</packaging>
+	<name>multiplication</name>
+	<description>Multiplication Microservice</description>
 
 	<properties>
 		<java.version>1.8</java.version>
