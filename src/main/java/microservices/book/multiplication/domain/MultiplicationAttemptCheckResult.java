@@ -18,9 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class MultiplicationAttemptCheckResult {
 	private final Long attemptId;
 	private final boolean correct;
+	private final Long userId;
 
 	@SuppressWarnings("unused")
 	private MultiplicationAttemptCheckResult() {
-		this(null, false);
+		this(null, false, null);
 	}
 }

@@ -65,7 +65,7 @@ public class MultiplicationResultAttemptControllerTest {
 	}
 
 	void genericParameterizedTest(final boolean correct) throws Exception {
-		MultiplicationAttemptCheckResult result = new MultiplicationAttemptCheckResult(1L, correct);
+		MultiplicationAttemptCheckResult result = new MultiplicationAttemptCheckResult(1L, correct, 1L);
 		// given (remember we're not testing here the service itself)
 		given(multiplicationService.checkAttempt(any(MultiplicationResultAttempt.class))).willReturn(result);
 		User user = new User("john");

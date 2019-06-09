@@ -95,7 +95,8 @@ class MultiplicationServiceImpl implements MultiplicationService {
 				checkedAttempt.isCorrect()));
 
 		// Returns the result
-		return new MultiplicationAttemptCheckResult(checkedAttempt.getId(), checkedAttempt.isCorrect());
+		return new MultiplicationAttemptCheckResult(checkedAttempt.getId(), checkedAttempt.isCorrect(),
+				checkedAttempt.getUser().getId());
 	}
 
 	/*
