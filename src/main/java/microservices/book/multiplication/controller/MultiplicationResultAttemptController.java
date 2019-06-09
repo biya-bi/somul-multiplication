@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.book.multiplication.domain.MultiplicationAttemptCheckResult;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.service.MultiplicationService;
 
@@ -40,15 +41,9 @@ class MultiplicationResultAttemptController {
 	}
 
 	@PostMapping
-	ResponseEntity<MultiplicationResultAttempt> postResult(
+	ResponseEntity<MultiplicationAttemptCheckResult> postResult(
 			@RequestBody MultiplicationResultAttempt multiplicationResultAttempt) {
-		boolean isCorrect = multiplicationService.checkAttempt(multiplicationResultAttempt);
-
-		MultiplicationResultAttempt attemptCopy = new MultiplicationResultAttempt(multiplicationResultAttempt.getUser(),
-				multiplicationResultAttempt.getMultiplication(), multiplicationResultAttempt.getResultAttempt(),
-				isCorrect);
-
-		return ResponseEntity.ok(attemptCopy);
+		return ResponseEntity.ok(multiplicationService.checkAttempt(multiplicationResultAttempt));
 	}
 
 	@GetMapping

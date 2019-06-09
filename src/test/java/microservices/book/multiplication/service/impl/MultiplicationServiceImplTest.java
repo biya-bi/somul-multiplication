@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import microservices.book.multiplication.domain.Multiplication;
+import microservices.book.multiplication.domain.MultiplicationAttemptCheckResult;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
 import microservices.book.multiplication.event.EventDispatcher;
@@ -79,9 +80,9 @@ public class MultiplicationServiceImplTest {
 		given(multiplicationRepository.findByFactorAAndFactorB(multiplication.getFactorA(),
 				multiplication.getFactorB())).willReturn(Optional.<Multiplication>of(multiplication));
 		// when
-		boolean attemptResult = multiplicationService.checkAttempt(attempt);
+		MultiplicationAttemptCheckResult checkResult = multiplicationService.checkAttempt(attempt);
 		// then
-		assertThat(attemptResult).isTrue();
+		assertThat(checkResult.isCorrect()).isTrue();
 		verify(attemptRepository).save(verifiedAttempt);
 		verify(multiplicationRepository).findByFactorAAndFactorB(multiplication.getFactorA(),
 				multiplication.getFactorB());
@@ -99,9 +100,9 @@ public class MultiplicationServiceImplTest {
 		given(multiplicationRepository.findByFactorAAndFactorB(multiplication.getFactorA(),
 				multiplication.getFactorB())).willReturn(Optional.<Multiplication>of(multiplication));
 		// when
-		boolean attemptResult = multiplicationService.checkAttempt(attempt);
+		MultiplicationAttemptCheckResult checkResult = multiplicationService.checkAttempt(attempt);
 		// then
-		assertThat(attemptResult).isFalse();
+		assertThat(checkResult.isCorrect()).isFalse();
 		verify(attemptRepository).save(attempt);
 		verify(multiplicationRepository).findByFactorAAndFactorB(multiplication.getFactorA(),
 				multiplication.getFactorB());

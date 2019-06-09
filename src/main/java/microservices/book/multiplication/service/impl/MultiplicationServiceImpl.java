@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import microservices.book.multiplication.domain.Multiplication;
+import microservices.book.multiplication.domain.MultiplicationAttemptCheckResult;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
 import microservices.book.multiplication.event.EventDispatcher;
@@ -67,7 +68,7 @@ class MultiplicationServiceImpl implements MultiplicationService {
 	 */
 	@Transactional
 	@Override
-	public boolean checkAttempt(MultiplicationResultAttempt resultAttempt) {
+	public MultiplicationAttemptCheckResult checkAttempt(MultiplicationResultAttempt resultAttempt) {
 		// Check if the user already exists for that alias
 		Optional<User> userOptional = userRepository.findByAlias(resultAttempt.getUser().getAlias());
 		// Checks if it's correct
@@ -94,7 +95,7 @@ class MultiplicationServiceImpl implements MultiplicationService {
 				checkedAttempt.isCorrect()));
 
 		// Returns the result
-		return correct;
+		return new MultiplicationAttemptCheckResult(checkedAttempt.getId(), checkedAttempt.isCorrect());
 	}
 
 	/*
