@@ -4,7 +4,7 @@
 package microservices.book.multiplication.service.impl;
 
 import microservices.book.multiplication.repository.MultiplicationRepository;
-import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
+import microservices.book.multiplication.repository.MultiplicationAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
 import microservices.book.multiplication.service.AdminService;
 
@@ -20,12 +20,12 @@ import org.springframework.stereotype.Service;
 class AdminServiceImpl implements AdminService {
 
 	private MultiplicationRepository multiplicationRepository;
-	private MultiplicationResultAttemptRepository attemptRepository;
+	private MultiplicationAttemptRepository attemptRepository;
 	private UserRepository userRepository;
 
 	@Autowired
 	AdminServiceImpl(final MultiplicationRepository multiplicationRepository, final UserRepository userRepository,
-			final MultiplicationResultAttemptRepository attemptRepository) {
+			final MultiplicationAttemptRepository attemptRepository) {
 		this.multiplicationRepository = multiplicationRepository;
 		this.userRepository = userRepository;
 		this.attemptRepository = attemptRepository;

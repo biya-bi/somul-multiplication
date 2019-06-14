@@ -18,12 +18,12 @@ import org.mockito.MockitoAnnotations;
 
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationAttemptCheckResult;
-import microservices.book.multiplication.domain.MultiplicationResultAttempt;
+import microservices.book.multiplication.domain.MultiplicationAttempt;
 import microservices.book.multiplication.domain.User;
 import microservices.book.multiplication.event.EventDispatcher;
 import microservices.book.multiplication.event.MultiplicationSolvedEvent;
 import microservices.book.multiplication.repository.MultiplicationRepository;
-import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
+import microservices.book.multiplication.repository.MultiplicationAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
 import microservices.book.multiplication.service.RandomGeneratorService;
 
@@ -39,7 +39,7 @@ public class MultiplicationServiceImplTest {
 	private RandomGeneratorService randomGeneratorService;
 
 	@Mock
-	private MultiplicationResultAttemptRepository attemptRepository;
+	private MultiplicationAttemptRepository attemptRepository;
 
 	@Mock
 	private UserRepository userRepository;
@@ -74,8 +74,8 @@ public class MultiplicationServiceImplTest {
 		// given
 		Multiplication multiplication = new Multiplication(50, 60);
 		User user = new User("john_doe");
-		MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3000, false);
-		MultiplicationResultAttempt verifiedAttempt = new MultiplicationResultAttempt(user, multiplication, 3000, true);
+		MultiplicationAttempt attempt = new MultiplicationAttempt(user, multiplication, 3000, false);
+		MultiplicationAttempt verifiedAttempt = new MultiplicationAttempt(user, multiplication, 3000, true);
 		given(userRepository.findByAlias("john_doe")).willReturn(Optional.empty());
 		given(multiplicationRepository.findByFactorAAndFactorB(multiplication.getFactorA(),
 				multiplication.getFactorB())).willReturn(Optional.<Multiplication>of(multiplication));
@@ -95,7 +95,7 @@ public class MultiplicationServiceImplTest {
 		// given
 		Multiplication multiplication = new Multiplication(50, 60);
 		User user = new User("john_doe");
-		MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3010, false);
+		MultiplicationAttempt attempt = new MultiplicationAttempt(user, multiplication, 3010, false);
 		given(userRepository.findByAlias("john_doe")).willReturn(Optional.empty());
 		given(multiplicationRepository.findByFactorAAndFactorB(multiplication.getFactorA(),
 				multiplication.getFactorB())).willReturn(Optional.<Multiplication>of(multiplication));
@@ -114,13 +114,13 @@ public class MultiplicationServiceImplTest {
 		// given
 		Multiplication multiplication = new Multiplication(50, 60);
 		User user = new User("john_doe");
-		MultiplicationResultAttempt attempt1 = new MultiplicationResultAttempt(user, multiplication, 3010, false);
-		MultiplicationResultAttempt attempt2 = new MultiplicationResultAttempt(user, multiplication, 3051, false);
-		List<MultiplicationResultAttempt> latestAttempts = Lists.newArrayList(attempt1, attempt2);
+		MultiplicationAttempt attempt1 = new MultiplicationAttempt(user, multiplication, 3010, false);
+		MultiplicationAttempt attempt2 = new MultiplicationAttempt(user, multiplication, 3051, false);
+		List<MultiplicationAttempt> latestAttempts = Lists.newArrayList(attempt1, attempt2);
 		given(userRepository.findByAlias("john_doe")).willReturn(Optional.empty());
 		given(attemptRepository.findTop5ByUserAliasOrderByIdDesc("john_doe")).willReturn(latestAttempts);
 		// when
-		List<MultiplicationResultAttempt> latestAttemptsResult = multiplicationService.getStatsForUser("john_doe");
+		List<MultiplicationAttempt> latestAttemptsResult = multiplicationService.getStatsForUser("john_doe");
 		// then
 		assertThat(latestAttemptsResult).isEqualTo(latestAttempts);
 	}
@@ -131,12 +131,12 @@ public class MultiplicationServiceImplTest {
 		long attemptId = 1;
 		Multiplication multiplication = new Multiplication(50, 60);
 		User user = new User("john_doe");
-		MultiplicationResultAttempt expected = new MultiplicationResultAttempt(user, multiplication, 3000, true);
+		MultiplicationAttempt expected = new MultiplicationAttempt(user, multiplication, 3000, true);
 
 		given(attemptRepository.findOne(attemptId)).willReturn(expected);
 
 		// When
-		MultiplicationResultAttempt actual = multiplicationService.getMultiplicationResultAttempt(attemptId);
+		MultiplicationAttempt actual = multiplicationService.getMultiplicationResultAttempt(attemptId);
 
 		// Then
 		assertThat(actual).isEqualTo(expected);

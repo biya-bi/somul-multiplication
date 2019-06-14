@@ -25,7 +25,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Entity
-public final class MultiplicationResultAttempt {
+public final class MultiplicationAttempt {
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -38,11 +38,11 @@ public final class MultiplicationResultAttempt {
 	@JoinColumn(name = "MULTIPLICATION_ID")
 	private final Multiplication multiplication;
 	
-	private final int resultAttempt;
+	private final int result;
 	private final boolean correct;
 
 	// Empty constructor for JSON/JPA
-	MultiplicationResultAttempt() {
+	MultiplicationAttempt() {
 		this(null, null, -1, false);
 	}
 }

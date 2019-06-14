@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationAttemptCheckResult;
-import microservices.book.multiplication.domain.MultiplicationResultAttempt;
+import microservices.book.multiplication.domain.MultiplicationAttempt;
 import microservices.book.multiplication.domain.User;
 import microservices.book.multiplication.service.MultiplicationService;
 
@@ -38,15 +38,15 @@ import microservices.book.multiplication.service.MultiplicationService;
  *
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(MultiplicationResultAttemptController.class)
-public class MultiplicationResultAttemptControllerTest {
+@WebMvcTest(MultiplicationAttemptController.class)
+public class MultiplicationAttemptControllerTest {
 	@MockBean
 	private MultiplicationService multiplicationService;
 	@Autowired
 	private MockMvc mvc;
 	// These objects will be magically initialized by the initFields method below.
-	private JacksonTester<MultiplicationResultAttempt> jsonResult;
-	private JacksonTester<List<MultiplicationResultAttempt>> jsonResultAttemptList;
+	private JacksonTester<MultiplicationAttempt> jsonResult;
+	private JacksonTester<List<MultiplicationAttempt>> jsonResultAttemptList;
 	private JacksonTester<MultiplicationAttemptCheckResult> attemptCheckResultTester;
 
 	@Before
@@ -67,13 +67,13 @@ public class MultiplicationResultAttemptControllerTest {
 	void genericParameterizedTest(final boolean correct) throws Exception {
 		MultiplicationAttemptCheckResult result = new MultiplicationAttemptCheckResult(1L, correct, 1L);
 		// given (remember we're not testing here the service itself)
-		given(multiplicationService.checkAttempt(any(MultiplicationResultAttempt.class))).willReturn(result);
+		given(multiplicationService.checkAttempt(any(MultiplicationAttempt.class))).willReturn(result);
 		User user = new User("john");
 		Multiplication multiplication = new Multiplication(50, 70);
-		MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3500, correct);
+		MultiplicationAttempt attempt = new MultiplicationAttempt(user, multiplication, 3500, correct);
 		// when
 		MockHttpServletResponse response = mvc.perform(
-				post("/results").contentType(MediaType.APPLICATION_JSON).content(jsonResult.write(attempt).getJson()))
+				post("/attempts").contentType(MediaType.APPLICATION_JSON).content(jsonResult.write(attempt).getJson()))
 				.andReturn().getResponse();
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
@@ -85,11 +85,11 @@ public class MultiplicationResultAttemptControllerTest {
 		// given
 		User user = new User("john_doe");
 		Multiplication multiplication = new Multiplication(50, 70);
-		MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3500, true);
-		List<MultiplicationResultAttempt> recentAttempts = Lists.newArrayList(attempt, attempt);
+		MultiplicationAttempt attempt = new MultiplicationAttempt(user, multiplication, 3500, true);
+		List<MultiplicationAttempt> recentAttempts = Lists.newArrayList(attempt, attempt);
 		given(multiplicationService.getStatsForUser("john_doe")).willReturn(recentAttempts);
 		// when
-		MockHttpServletResponse response = mvc.perform(get("/results").param("alias", "john_doe")).andReturn()
+		MockHttpServletResponse response = mvc.perform(get("/attempts").param("alias", "john_doe")).andReturn()
 				.getResponse();
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
@@ -103,12 +103,12 @@ public class MultiplicationResultAttemptControllerTest {
 		long attemptId = 1;
 		User user = new User("john_doe");
 		Multiplication multiplication = new Multiplication(50, 70);
-		MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3500, correct);
+		MultiplicationAttempt attempt = new MultiplicationAttempt(user, multiplication, 3500, correct);
 
 		given(multiplicationService.getMultiplicationResultAttempt(attemptId)).willReturn(attempt);
 
 		// When
-		MockHttpServletResponse response = mvc.perform(get("/results/" + attemptId).accept(MediaType.APPLICATION_JSON))
+		MockHttpServletResponse response = mvc.perform(get("/attempts/" + attemptId).accept(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
 
 		// then

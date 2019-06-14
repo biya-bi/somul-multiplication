@@ -13,12 +13,12 @@ import org.springframework.util.Assert;
 
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationAttemptCheckResult;
-import microservices.book.multiplication.domain.MultiplicationResultAttempt;
+import microservices.book.multiplication.domain.MultiplicationAttempt;
 import microservices.book.multiplication.domain.User;
 import microservices.book.multiplication.event.EventDispatcher;
 import microservices.book.multiplication.event.MultiplicationSolvedEvent;
 import microservices.book.multiplication.repository.MultiplicationRepository;
-import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
+import microservices.book.multiplication.repository.MultiplicationAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
 import microservices.book.multiplication.service.MultiplicationService;
 import microservices.book.multiplication.service.RandomGeneratorService;
@@ -30,14 +30,14 @@ import microservices.book.multiplication.service.RandomGeneratorService;
 @Service
 class MultiplicationServiceImpl implements MultiplicationService {
 	private RandomGeneratorService randomGeneratorService;
-	private MultiplicationResultAttemptRepository attemptRepository;
+	private MultiplicationAttemptRepository attemptRepository;
 	private UserRepository userRepository;
 	private MultiplicationRepository multiplicationRepository;
 	private EventDispatcher eventDispatcher;
 
 	@Autowired
 	public MultiplicationServiceImpl(final RandomGeneratorService randomGeneratorService,
-			final MultiplicationResultAttemptRepository attemptRepository, final UserRepository userRepository,
+			final MultiplicationAttemptRepository attemptRepository, final UserRepository userRepository,
 			MultiplicationRepository multiplicationRepository, final EventDispatcher eventDispatcher) {
 		this.randomGeneratorService = randomGeneratorService;
 		this.attemptRepository = attemptRepository;
@@ -64,15 +64,15 @@ class MultiplicationServiceImpl implements MultiplicationService {
 	 * 
 	 * @see
 	 * microservices.book.multiplication.service.MultiplicationService#checkAttempt(
-	 * microservices.book.multiplication.domain.MultiplicationResultAttempt)
+	 * microservices.book.multiplication.domain.MultiplicationAttempt)
 	 */
 	@Transactional
 	@Override
-	public MultiplicationAttemptCheckResult checkAttempt(MultiplicationResultAttempt resultAttempt) {
+	public MultiplicationAttemptCheckResult checkAttempt(MultiplicationAttempt resultAttempt) {
 		// Check if the user already exists for that alias
 		Optional<User> userOptional = userRepository.findByAlias(resultAttempt.getUser().getAlias());
 		// Checks if it's correct
-		boolean correct = resultAttempt.getResultAttempt() == resultAttempt.getMultiplication().getFactorA()
+		boolean correct = resultAttempt.getResult() == resultAttempt.getMultiplication().getFactorA()
 				* resultAttempt.getMultiplication().getFactorB();
 
 		// Avoids 'hack' attempts
@@ -82,9 +82,9 @@ class MultiplicationServiceImpl implements MultiplicationService {
 				resultAttempt.getMultiplication().getFactorA(), resultAttempt.getMultiplication().getFactorB());
 
 		// Creates a copy, now setting the 'correct' field accordingly
-		MultiplicationResultAttempt checkedAttempt = new MultiplicationResultAttempt(
+		MultiplicationAttempt checkedAttempt = new MultiplicationAttempt(
 				userOptional.orElse(resultAttempt.getUser()),
-				multiplicationOptional.orElse(resultAttempt.getMultiplication()), resultAttempt.getResultAttempt(),
+				multiplicationOptional.orElse(resultAttempt.getMultiplication()), resultAttempt.getResult(),
 				correct);
 
 		// Stores the attempt
@@ -106,7 +106,7 @@ class MultiplicationServiceImpl implements MultiplicationService {
 	 * getStatsForUser(java.lang.String)
 	 */
 	@Override
-	public List<MultiplicationResultAttempt> getStatsForUser(String userAlias) {
+	public List<MultiplicationAttempt> getStatsForUser(String userAlias) {
 		return attemptRepository.findTop5ByUserAliasOrderByIdDesc(userAlias);
 	}
 
@@ -117,7 +117,7 @@ class MultiplicationServiceImpl implements MultiplicationService {
 	 * getMultiplicationResultAttempt(java.lang.Long)
 	 */
 	@Override
-	public MultiplicationResultAttempt getMultiplicationResultAttempt(Long attemptId) {
+	public MultiplicationAttempt getMultiplicationResultAttempt(Long attemptId) {
 		return attemptRepository.findOne(attemptId);
 	}
 
